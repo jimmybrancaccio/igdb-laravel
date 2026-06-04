@@ -22,7 +22,7 @@
         "orchestra/testbench": "^9.0|^10.0|^11.0",
         "nunomaduro/collision": "^8.9.4",
         "roave/security-advisories": "dev-latest",
-        "larastan/larastan": "^3.0.2",
+        "larastan/larastan": "^3.10.0",
         "laravel/pint": "^1.13",
         "pestphp/pest": "^3.7.4",
         "pestphp/pest-plugin-type-coverage": "^3.2.3",
