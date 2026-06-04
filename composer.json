@@ -24,7 +24,7 @@
         "roave/security-advisories": "dev-latest",
         "larastan/larastan": "^3.10.0",
         "laravel/pint": "^1.29.1",
-        "pestphp/pest": "^3.7.4",
+        "pestphp/pest": "^3.8.6",
         "pestphp/pest-plugin-type-coverage": "^3.2.3",
         "rector/rector": "^2.0.7"
     },
