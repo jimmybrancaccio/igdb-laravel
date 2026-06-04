@@ -10,7 +10,7 @@ use MarcReichel\IGDBLaravel\Enums\Image\Size;
 
 abstract class Image extends Model
 {
-    protected const IMAGE_BASE_PATH = '//images.igdb.com/igdb/image/upload';
+    protected const string IMAGE_BASE_PATH = '//images.igdb.com/igdb/image/upload';
 
     /**
      * @throws InvalidArgumentException

@@ -15,3 +15,12 @@ updates:
       prefix: "⬆️"
       prefix_development: "⬆️"
       include_scope: false
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "marcreichel"
+    commit-message:
+      prefix: "⬆️"
+      include_scope: false
