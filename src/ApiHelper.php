@@ -11,7 +11,7 @@ use MarcReichel\IGDBLaravel\Exceptions\AuthenticationException;
 
 class ApiHelper
 {
-    public const IGDB_BASE_URI = 'https://api.igdb.com/v4/';
+    public const string IGDB_BASE_URI = 'https://api.igdb.com/v4/';
 
     /**
      * Retrieves an Access Token from Twitch.

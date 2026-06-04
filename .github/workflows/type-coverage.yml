@@ -6,16 +6,20 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   type-coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: 8.5
           coverage: xdebug
+          ini-values: memory_limit=-1
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --dev
+        run: composer install --prefer-dist --no-progress
       - run: composer test:type-coverage
