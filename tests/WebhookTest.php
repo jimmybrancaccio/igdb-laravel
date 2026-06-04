@@ -115,7 +115,7 @@ class WebhookTest extends TestCase
         Game::createWebhook(Method::CREATE);
     }
 
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldDispatchCreatedEvent(string $className): void
     {
         $eventClassString = 'MarcReichel\IGDBLaravel\Events\\' . $className . 'Created';
@@ -131,7 +131,7 @@ class WebhookTest extends TestCase
         Event::assertDispatched($eventClassString);
     }
 
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldDispatchUpdatedEvent(string $className): void
     {
         $eventClassString = 'MarcReichel\IGDBLaravel\Events\\' . $className . 'Updated';
@@ -147,7 +147,7 @@ class WebhookTest extends TestCase
         Event::assertDispatched($eventClassString);
     }
 
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldDispatchDeletedEvent(string $className): void
     {
         $eventClassString = 'MarcReichel\IGDBLaravel\Events\\' . $className . 'Deleted';
@@ -163,7 +163,7 @@ class WebhookTest extends TestCase
         Event::assertDispatched($eventClassString);
     }
 
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldHaveACategoryCaseForEveryModel(string $className): void
     {
         $categories = collect(Category::cases())

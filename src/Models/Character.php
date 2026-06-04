@@ -7,7 +7,9 @@ namespace MarcReichel\IGDBLaravel\Models;
 class Character extends Model
 {
     protected array $casts = [
+        'gender' => CharacterGender::class,
         'games' => Game::class,
         'mug_shot' => CharacterMugShot::class,
+        'species' => CharacterSpecies::class,
     ];
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use MarcReichel\IGDBLaravel\Enums\Webhook\Category;
 use MarcReichel\IGDBLaravel\IGDBLaravelServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use ReflectionClass;
@@ -83,7 +84,7 @@ class TestCase extends Orchestra
     {
         $files = glob(__DIR__ . '/../src/Models/*.php');
         $classNames = [];
-        $blackList = ['PopularityPrimitive', 'Search', 'Webhook'];
+        $blackList = ['Webhook'];
 
         if (!$files) {
             return $classNames;
@@ -108,5 +109,13 @@ class TestCase extends Orchestra
         }
 
         return $classNames;
+    }
+
+    public static function webhookModelsDataProvider(): array
+    {
+        return collect(Category::cases())
+            ->mapWithKeys(static fn (Category $category) => [$category->name => [$category->name]])
+            ->sortKeys()
+            ->toArray();
     }
 }

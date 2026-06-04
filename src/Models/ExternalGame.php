@@ -9,5 +9,6 @@ class ExternalGame extends Model
     protected array $casts = [
         'game' => Game::class,
         'platform' => Platform::class,
+        'source' => ExternalGameSource::class,
     ];
 }

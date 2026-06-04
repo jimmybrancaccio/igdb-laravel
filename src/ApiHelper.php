@@ -12,6 +12,7 @@ use MarcReichel\IGDBLaravel\Exceptions\AuthenticationException;
 class ApiHelper
 {
     public const string IGDB_BASE_URI = 'https://api.igdb.com/v4/';
+    private const string TWITCH_TOKEN_URI = 'https://id.twitch.tv/oauth2/token';
 
     /**
      * Retrieves an Access Token from Twitch.
@@ -20,7 +21,7 @@ class ApiHelper
      */
     public static function retrieveAccessToken(): string
     {
-        $accessTokenCacheKey = 'igdb_cache.access_token';
+        $accessTokenCacheKey = config('igdb.cache_prefix', 'igdb_cache') . '.access_token';
 
         $accessToken = Cache::get($accessTokenCacheKey, '');
 
@@ -34,12 +35,12 @@ class ApiHelper
                 'client_secret' => config('igdb.credentials.client_secret'),
                 'grant_type' => 'client_credentials',
             ]);
-            $response = Http::post('https://id.twitch.tv/oauth2/token?' . $query)
+            $response = Http::post(self::TWITCH_TOKEN_URI . '?' . $query)
                 ->throw()
                 ->json();
 
             if (is_array($response) && isset($response['access_token']) && $response['expires_in']) {
-                Cache::put($accessTokenCacheKey, (string) $response['access_token'], (int) $response['expires_in'] - 60);
+                Cache::put($accessTokenCacheKey, (string) $response['access_token'], max(1, (int) $response['expires_in'] - 60));
 
                 $accessToken = $response['access_token'];
             }

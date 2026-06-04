@@ -54,6 +54,27 @@ class ModelTest extends TestCase
         Http::assertSent(fn (Request $request) => $this->isApiCall($request, 'games', 'search "Fortnite";'));
     }
 
+    public function testItShouldCoverDocumentedModelEndpoints(): void
+    {
+        /** @var array{model_endpoints: array<int, string>} $fixture */
+        $fixture = require __DIR__ . '/Fixtures/igdb-endpoints.php';
+
+        $endpoints = collect(self::modelsDataProvider())
+            ->map(static function (array $model): string {
+                /** @var class-string<Model> $fqcn */
+                $fqcn = 'MarcReichel\IGDBLaravel\Models\\' . $model[0];
+
+                return (new $fqcn())->getEndpoint();
+            })
+            ->sort()
+            ->values()
+            ->toArray();
+
+        $expected = collect($fixture['model_endpoints'])->sort()->values()->toArray();
+
+        $this->assertSame($expected, $endpoints);
+    }
+
     public function testItShouldGenerateWhereEqualsQueryWithOperator(): void
     {
         Game::where('name', '=', 'Fortnite')->get();
