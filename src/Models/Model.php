@@ -13,10 +13,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use MarcReichel\IGDBLaravel\ApiHelper;
 use MarcReichel\IGDBLaravel\Builder;
+use MarcReichel\IGDBLaravel\Client;
 use MarcReichel\IGDBLaravel\Enums\Webhook\Method;
 use MarcReichel\IGDBLaravel\Exceptions\AuthenticationException;
 use MarcReichel\IGDBLaravel\Exceptions\InvalidParamsException;
@@ -72,6 +71,7 @@ use RuntimeException;
  * @method static Builder orderBy(string $key, string $direction = 'asc')
  * @method static Builder orderByDesc(string $key)
  * @method static Builder with(array $relationships)
+ * @method static Builder exclude(mixed $fields)
  * @method static Builder cache(int $seconds)
  * @method static mixed|string get()
  * @method static static|null find(int $id)
@@ -290,6 +290,12 @@ abstract class Model implements Arrayable, ArrayAccess
 
     protected function setEndpoint(): void
     {
+        if (defined(static::class . '::ENDPOINT')) {
+            $this->endpoint = (string) constant(static::class . '::ENDPOINT');
+
+            return;
+        }
+
         $class = class_basename(static::class);
 
         $this->endpoint = Str::snake(Str::plural($class));
@@ -358,14 +364,7 @@ abstract class Model implements Arrayable, ArrayAccess
 
         $endpoint = $self->endpoint . '/webhooks';
 
-        $client = Http::withOptions([
-            'base_uri' => ApiHelper::IGDB_BASE_URI,
-        ])->withHeaders([
-            'Accept' => 'application/json',
-            'Client-ID' => config('igdb.credentials.client_id'),
-            'Authorization' => 'Bearer ' . ApiHelper::retrieveAccessToken(),
-        ])
-            ->asForm();
+        $client = Client::pendingRequest()->asForm();
 
         $response = $client->post($endpoint, [
             'url' => $url,

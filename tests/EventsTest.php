@@ -11,21 +11,21 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class EventsTest extends TestCase
 {
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldHaveCreatedEventForEveryModel(string $className): void
     {
         $eventClassString = 'MarcReichel\IGDBLaravel\Events\\' . $className . 'Created';
         $this->assertTrue(class_exists($eventClassString));
     }
 
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldHaveUpdatedEventForEveryModel(string $className): void
     {
         $eventClassString = 'MarcReichel\IGDBLaravel\Events\\' . $className . 'Updated';
         $this->assertTrue(class_exists($eventClassString));
     }
 
-    #[DataProvider('modelsDataProvider')]
+    #[DataProvider('webhookModelsDataProvider')]
     public function testItShouldHaveDeletedEventForEveryModel(string $className): void
     {
         $eventClassString = 'MarcReichel\IGDBLaravel\Events\\' . $className . 'Deleted';

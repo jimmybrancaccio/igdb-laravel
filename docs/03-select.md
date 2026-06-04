@@ -12,3 +12,17 @@ $games = Game::select(['*'])->get();
 
 $games = Game::select(['name', 'first_release_date'])->get();
 ```
+
+## Exclude fields
+
+The IGDB API also supports `exclude` clauses. This is useful when selecting all fields but skipping large or irrelevant
+properties.
+
+```php
+// torchlight! {"lineNumbers": false}
+use MarcReichel\IGDBLaravel\Models\Platform;
+
+$platforms = Platform::select(['*'])
+    ->exclude('alternative_name')
+    ->get();
+```

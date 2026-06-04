@@ -153,6 +153,17 @@ class Builder
     }
 
     /**
+     * Add an "exclude" clause to the query.
+     */
+    public function exclude(mixed $fields): self
+    {
+        $fields = is_array($fields) ? $fields : func_get_args();
+        $this->query->put('exclude', collect($fields)->flatten()->filter()->values());
+
+        return $this;
+    }
+
+    /**
      * Overwrite the cache lifetime for this query.
      */
     public function cache(int $seconds): self
@@ -171,7 +182,7 @@ class Builder
             if ($key === 'where') {
                 return collect($value)->unique()->implode(' ');
             }
-            if ($key === 'fields') {
+            if (in_array($key, ['exclude', 'fields'], true)) {
                 return collect($value)->unique()->sortBy(static fn (mixed $field) => count(explode('.', $field)))->implode(',');
             }
 
@@ -218,7 +229,7 @@ class Builder
             if (Str::startsWith($reflectionNamespace, $neededNamespace)) {
                 $this->class = $model::class;
                 $class = class_basename($this->class);
-                $this->endpoint = Str::snake(Str::plural($class));
+                $this->endpoint = $this->getEndpointFromClass($this->class, $class);
             }
         } elseif (is_string($model)) {
             $this->endpoint = $model;
@@ -229,6 +240,18 @@ class Builder
 
             throw new InvalidArgumentException($message);
         }
+    }
+
+    /**
+     * @param class-string $class
+     */
+    private function getEndpointFromClass(string $class, string $classBaseName): string
+    {
+        if (defined($class . '::ENDPOINT')) {
+            return (string) constant($class . '::ENDPOINT');
+        }
+
+        return Str::snake(Str::plural($classBaseName));
     }
 
     /**
@@ -267,6 +290,45 @@ class Builder
         $this->init();
 
         return $data;
+    }
+
+    /**
+     * Execute multiple APICalypse queries in a single IGDB request.
+     *
+     * @param array<string, Builder|string> $queries
+     *
+     * @throws InvalidParamsException
+     */
+    public static function multiQuery(array $queries, ?int $cacheLifetime = null): mixed
+    {
+        if (count($queries) > 10) {
+            throw new InvalidParamsException('IGDB multi-query supports a maximum of 10 queries.');
+        }
+
+        $body = collect($queries)
+            ->map(static function (Builder | string $query, string $name): string {
+                $endpoint = $query instanceof Builder ? $query->getEndpoint() : $name;
+                $queryBody = $query instanceof Builder ? $query->getQuery() : $query;
+
+                return sprintf('query %s "%s" {%s%s%s};', $endpoint, addslashes($name), PHP_EOL, $queryBody, PHP_EOL);
+            })
+            ->implode(PHP_EOL . PHP_EOL);
+
+        return Client::multiQuery($body, $cacheLifetime ?? (int) config('igdb.cache_lifetime', 3600));
+    }
+
+    /**
+     * Get the endpoint targeted by the builder.
+     *
+     * @throws MissingEndpointException
+     */
+    public function getEndpoint(): string
+    {
+        if (!isset($this->endpoint) || $this->endpoint === '') {
+            throw new MissingEndpointException();
+        }
+
+        return $this->endpoint;
     }
 
     private function mapToModel(mixed $result): mixed

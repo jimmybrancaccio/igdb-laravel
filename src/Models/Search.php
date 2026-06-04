@@ -6,6 +6,8 @@ namespace MarcReichel\IGDBLaravel\Models;
 
 class Search extends Model
 {
+    public const string ENDPOINT = 'search';
+
     protected array $casts = [
         'character' => Character::class,
         'collection' => Collection::class,

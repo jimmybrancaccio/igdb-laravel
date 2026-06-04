@@ -8,5 +8,6 @@ class Artwork extends Image
 {
     protected array $casts = [
         'game' => Game::class,
+        'type' => ArtworkType::class,
     ];
 }

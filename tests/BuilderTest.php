@@ -9,6 +9,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JsonException;
 use MarcReichel\IGDBLaravel\Builder;
@@ -67,6 +68,53 @@ class BuilderTest extends TestCase
         $this->igdb->select([])->get();
 
         Http::assertSent(fn (Request $request) => $this->isApiCall($request, 'games', 'fields *;'));
+    }
+
+    /**
+     * @throws MissingEndpointException
+     */
+    public function testItShouldGenerateExcludeQuery(): void
+    {
+        $this->igdb->select(['*'])->exclude('alternative_name', 'tags')->get();
+
+        Http::assertSent(fn (Request $request) => $this->isApiCall(
+            $request,
+            'games',
+            'exclude alternative_name,tags;',
+        ));
+    }
+
+    public function testItShouldGenerateMultiQueryRequest(): void
+    {
+        Builder::multiQuery([
+            'recent-games' => (new Builder('games'))->select('name')->limit(10),
+            'platforms' => 'fields name; limit 5;',
+        ], 0);
+
+        Http::assertSent(fn (Request $request) => $this->isApiCall(
+            $request,
+            'multiquery',
+            'query games "recent-games"',
+        ) && Str::of($request->body())->contains('query platforms "platforms"'));
+    }
+
+    public function testItShouldRejectTooManyMultiQueries(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Builder::multiQuery(array_fill_keys([
+            'query-1',
+            'query-2',
+            'query-3',
+            'query-4',
+            'query-5',
+            'query-6',
+            'query-7',
+            'query-8',
+            'query-9',
+            'query-10',
+            'query-11',
+        ], 'fields name;'), 0);
     }
 
     /**

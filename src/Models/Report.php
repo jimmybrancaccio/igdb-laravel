@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace MarcReichel\IGDBLaravel\Models;
 
-class CompanyWebsite extends Model
+class Report extends Model
 {
     protected array $casts = [
-        'category' => WebsiteType::class,
-        'type' => WebsiteType::class,
+        'type' => ReportType::class,
     ];
 }
