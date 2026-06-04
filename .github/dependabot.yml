@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "daily"
     assignees:
-      - "marcreichel"
+      - "jimmybrancaccio"
     commit-message:
       prefix: "⬆️"
       prefix_development: "⬆️"
@@ -20,7 +20,7 @@ updates:
     schedule:
       interval: "daily"
     assignees:
-      - "marcreichel"
+      - "jimmybrancaccio"
     commit-message:
       prefix: "⬆️"
       include_scope: false
