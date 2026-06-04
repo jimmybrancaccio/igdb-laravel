@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "orchestra/testbench": "^9.0|^10.0|^11.0",
-        "nunomaduro/collision": "^8.0",
+        "nunomaduro/collision": "^8.9.4",
         "roave/security-advisories": "dev-latest",
         "larastan/larastan": "^3.0.2",
         "laravel/pint": "^1.13",
