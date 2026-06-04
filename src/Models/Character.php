@@ -10,6 +10,6 @@ class Character extends Model
         'gender' => CharacterGender::class,
         'games' => Game::class,
         'mug_shot' => CharacterMugShot::class,
-        'species' => CharacterSpecie::class,
+        'species' => CharacterSpecies::class,
     ];
 }
